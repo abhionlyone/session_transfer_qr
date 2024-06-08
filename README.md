@@ -1,85 +1,69 @@
+# Session Transfer QR
 
-### Additional Files
+A Ruby gem for transferring sessions via QR code in Rails applications.
 
-#### CODE_OF_CONDUCT.md
+## Installation
 
-```markdown
-# Contributor Covenant Code of Conduct
+Add this line to your application's Gemfile:
 
-## Our Pledge
+```ruby
+gem 'session_transfer_qr'
+```
 
-We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+And then execute:
 
-We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
+```sh
+bundle install
+```
 
-## Our Standards
+Or install it yourself as:
 
-Examples of behavior that contributes to a positive environment for our community include:
+```sh
+gem install session_transfer_qr
+```
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall community
+## Usage
 
-Examples of unacceptable behavior include:
+### Step 1: Run the Generator
 
-* The use of sexualized language or imagery, and sexual attention or advances of any kind
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or email address, without their explicit permission
-* Other conduct which could reasonably be considered inappropriate in a professional setting
+Run the following command to set up the necessary files in your Rails application:
 
-## Enforcement Responsibilities
+```sh
+rails generate session_transfer_qr:install
+```
 
-Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.
+This will generate a controller (`app/controllers/session_transfer_controller.rb`) and add the required routes to your `config/routes.rb` file.
 
-Community leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.
+### Step 2: Display the QR Code
 
-## Scope
+In your view where you want to display the QR code for session transfer, add the following code:
 
-This Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
+```erb
+<%= link_to 'Transfer Session', session_transfer_new_path %>
+```
 
-## Enforcement
+This will create a link that directs users to the page displaying the QR code.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.
+### Step 3: Scan the QR Code
 
-All community leaders are obligated to respect the privacy and security of the reporter of any incident.
+On the device where you want to transfer the session, scan the QR code displayed on the original device. This will send a POST request to the `/session_transfer/create` endpoint with the encoded session data.
 
-## Enforcement Guidelines
+### Step 4: Handle the Transferred Session
 
-Community leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:
+The `SessionTransferController` will handle the POST request, decode the session data from the QR code, and update the session on the new device.
 
-### 1. Correction
+If the session transfer is successful, the user will be redirected to the `root_path` with a success notice. If the QR code is invalid, the user will be redirected to the `root_path` with an alert message.
 
-**Community Impact**: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.
+## Configuration
 
-**Consequence**: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.
+By default, the gem uses your Rails application's `secret_key_base` to encode and decode the session data. If you want to use a different secret key, you can set it in an initializer:
 
-### 2. Warning
+```ruby
+# config/initializers/session_transfer_qr.rb
+SessionTransferQR::Transfer::SECRET_KEY = 'your_custom_secret_key'
+```
 
-**Community Impact**: A violation through a single incident or series of actions.
 
-**Consequence**: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.
+## License
 
-### 3. Temporary Ban
-
-**Community Impact**: A serious violation of community standards, including sustained inappropriate behavior.
-
-**Consequence**: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.
-
-### 4. Permanent Ban
-
-**Community Impact**: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.
-
-**Consequence**: A permanent ban from any sort of public interaction within the community.
-
-## Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 2.0, available at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
-
-Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
-
-[homepage]: https://www.contributor-covenant.org
-
-For answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations.
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
